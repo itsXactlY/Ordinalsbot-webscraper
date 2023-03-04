@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
 import requests
+import schedule
 
 # preparing alerts (quick 'n dirty right now)
 url = "https://discord.com/api/webhooks/create/your-own-h00ka"
@@ -27,36 +28,52 @@ chrome_driver_path = 'chromedriver.exe'
 # URL where to scrape
 url = 'https://ordinalsbot.com/mint/btc-artsy-monke'
 
-# Start Chrome
-driver = webdriver.Chrome(chrome_driver_path)
-driver.minimize_window()
-driver.get(url)
+def ord_scraper():
+    # Start Chrome
+    driver = webdriver.Chrome(chrome_driver_path)
+    driver.minimize_window()
+    driver.get(url)
 
-# wait for up to 10 seconds for the element to be visible
-wait = WebDriverWait(driver, 10)
-element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "p.detail")))
+    # wait for up to 10 seconds for the element to be visible
+    wait = WebDriverWait(driver, 10)
+    element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "p.detail")))
 
-# get the text of the element
-available_count = int(element.text.split(': ')[-1].split(' ')[0])
-print(f'Available Monke: {available_count}')
+    # get the text of the element
+    available_count = int(element.text.split(': ')[-1].split(' ')[0])
+    print(f'Available Monke: {available_count}')
 
-sleep(3)
-print('Going into endless loop')
-try:
-    while True:
-        sleep(10)
-        elements = driver.find_element(By.CSS_SELECTOR, "p.detail")
-        new_available_count = int(elements.text.split(': ')[-1].split(' ')[0])
-        print('doing something here')
-        if new_available_count != available_count:
-            print(f'Available Monke: {new_available_count}')
-            available_count = new_available_count
-            result= requests.post(url, json=data, headers=headers)
-            if 200 <= result.status_code < 300:
-                print(f"Webhook sent {result.status_code}")
-            else:
-                print(f"Not sent with {result.status_code}, response:\n{result.json()}")
-except:
-    print("Something went wrong, send the highly trained apes!")
-sleep(10)
-    
+    sleep(3)
+    print('Going into endless loop')
+    try:
+        while True:
+            sleep(10)
+            elements = driver.find_element(By.CSS_SELECTOR, "p.detail")
+            new_available_count = int(elements.text.split(': ')[-1].split(' ')[0])
+            print('doing something here')
+            if new_available_count != available_count:
+                print(f'Available Monke: {new_available_count}')
+                available_count = new_available_count
+                result= requests.post(url, json=data, headers=headers)
+                if 200 <= result.status_code < 300:
+                    print(f"Webhook sent {result.status_code}")
+                else:
+                    print(f"Not sent with {result.status_code}, response:\n{result.json()}")
+    except:
+        print("Something went wrong, send the highly trained apes!")
+    sleep(10)
+
+##################################################
+ord_scraper()
+##################################################
+
+# Also quick 'n dirty style - if it dies - schedule it
+def scheduler():
+    '''
+    this function sets up the scheduler in case the mainscript died on its own journey all alone
+    just to keep this going, no matter what
+    '''
+    print('Firing up...')
+    schedule.every(3).seconds.do(ord_scraper.run)
+        
+# Start scheduler
+scheduler()
