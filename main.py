@@ -7,16 +7,18 @@ import requests
 import schedule
 # URL where to scrape
 mint_url = 'https://ordinalsbot.com/mint/btc-artsy-monke'
-# Webhook URL (Discod, Telegram, Weather Forecast...)
+# Webhook URL (Discord, Telegram, Weather Forecast...)
 webhook_url = 'https://discord.com/api/webhooks/create/your-own-h00k'
 
 
 def send_webhook_message(new_minted_monke, new_mint_amount):
-    message = f'{new_minted_monke} BTC Monke(s) minted and found a new home! {new_mint_amount} Monke left alone...'
-    req = requests.post(webhook_url, json={'content': message})
-    if 200 <= req.status_code < 300:
-        print(f"Webhook sent {req.status_code}")
-    else:
+    try:
+        message = f'{new_minted_monke} BTC Monke(s) minted and found a new home! {new_mint_amount} Monke left alone...'
+        req = requests.post(webhook_url, json={'content': message})
+        if 200 <= req.status_code < 300:
+            print(f"Webhook sent {req.status_code}")
+    
+    except:
         print(f"Not sent with {req.status_code}, response:\n{req.json()}")
 
 def ord_scraper():
@@ -41,15 +43,13 @@ def ord_scraper():
             ^^^^^^^^^^
             dont go ham on it until we can get needed details via API
             '''
-            print('next check in 30')
+
             # fetching details
             elements = driver.find_element(By.CSS_SELECTOR, "p.detail")
             new_available_count = int(elements.text.split(': ')[-1].split(' ')[0])
             new_minted_monke = new_available_count - available_count
             
-            # if new_minted_monke > 0:
             if new_available_count != available_count:
-                print(f'{new_minted_monke} new Monke(s) minted! Total available: {new_available_count}')
                 available_count = new_available_count
                 send_webhook_message(new_minted_monke, new_available_count)
 
