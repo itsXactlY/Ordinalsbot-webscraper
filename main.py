@@ -1,3 +1,16 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from time import sleep
+import requests
+import schedule
+# URL where to scrape
+mint_url = 'https://ordinalsbot.com/mint/btc-artsy-monke'
+# Webhook URL (Discod, Telegram, Weather Forecast...)
+webhook_url = 'https://discord.com/api/webhooks/create/your-own-h00k'
+
+
 def send_webhook_message(new_minted_monke, new_mint_amount):
     message = f'{new_minted_monke} BTC Monke(s) minted and found a new home! {new_mint_amount} Monke left alone...'
     req = requests.post(webhook_url, json={'content': message})
