@@ -1,20 +1,5 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from time import sleep
-import requests
-import schedule
-
-# URL where to scrape
-mint_url = 'https://ordinalsbot.com/mint/btc-artsy-monke'
-
-# Webhook URL (Discod, Telegram, Weather Forecast...)
-webhook_url = 'https://discord.com/api/webhooks/create/your-own-h00k'
-
-
-def send_webhook_message(new_minted_monke, new_amount):
-    message = f'{new_minted_monke} BTC Monke(s) minted and found a new home! {new_amount} Monke left alone...'
+def send_webhook_message(new_minted_monke, new_mint_amount):
+    message = f'{new_minted_monke} BTC Monke(s) minted and found a new home! {new_mint_amount} Monke left alone...'
     req = requests.post(webhook_url, json={'content': message})
     if 200 <= req.status_code < 300:
         print(f"Webhook sent {req.status_code}")
@@ -49,7 +34,8 @@ def ord_scraper():
             new_available_count = int(elements.text.split(': ')[-1].split(' ')[0])
             new_minted_monke = new_available_count - available_count
             
-            if new_minted_monke > 0:
+            # if new_minted_monke > 0:
+            if new_available_count != available_count:
                 print(f'{new_minted_monke} new Monke(s) minted! Total available: {new_available_count}')
                 available_count = new_available_count
                 send_webhook_message(new_minted_monke, new_available_count)
