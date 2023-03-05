@@ -45,7 +45,7 @@ def ord_scraper():
             sleep(1.25)
             elements = driver.find_element(By.CSS_SELECTOR, "p.detail")
             new_available_count = int(elements.text.split(': ')[-1].split(' ')[0])
-            print(f'Available Monke: {available_count}')
+
             if new_available_count != available_count:
                 available_count = new_available_count
                 send_webhook_message(new_available_count)
