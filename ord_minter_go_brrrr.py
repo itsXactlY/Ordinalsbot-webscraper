@@ -62,18 +62,15 @@ def ord_scraper():
         print("Something went wrong, send the highly trained apes!")
     sleep(10)
 
-##################################################
-ord_scraper()
-##################################################
 
-# Also quick 'n dirty style - if it dies - schedule it
-def scheduler():
-    '''
-    this function sets up the scheduler in case the mainscript died on its own journey all alone
-    just to keep this going, no matter what
-    '''
-    print('Firing up...')
-    schedule.every(3).seconds.do(ord_scraper.run)
-        
-# Start scheduler
-scheduler()
+# schedule it
+ord_scraper()
+schedule.every(15).seconds.do(ord_scraper)
+
+while True:
+    try:
+        schedule.run_pending()
+        sleep(15)
+    except:
+        print('Internet Problem? Retrying in a minute...')
+        sleep(60)
