@@ -5,15 +5,17 @@ from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
 import requests
 import schedule
+
 # URL where to scrape
 mint_url = 'https://ordinalsbot.com/mint/btc-artsy-monke'
+
 # Webhook URL (Discord, Telegram, Weather Forecast...)
 webhook_url = 'https://discord.com/api/webhooks/create/your-own-h00k'
 
 
 def send_webhook_message(new_minted_monke, new_mint_amount):
     try:
-        message = f'{new_minted_monke} BTC Monke(s) minted and found a new home! {new_mint_amount} Monke left alone...'
+        message = f'{new_minted_monke} BTC ordinal Monke found a new yacht owner! {new_mint_amount} Monke waiting for partey... '
         req = requests.post(webhook_url, json={'content': message})
         if 200 <= req.status_code < 300:
             print(f"Webhook sent {req.status_code}")
@@ -67,3 +69,4 @@ while True:
     except:
         print('Internet Problem? Retrying in a minute...')
         sleep(60)
+
