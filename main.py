@@ -3,8 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
-import requests
-import schedule
+import requests, schedule
 
 # URL where to scrape
 mint_url = 'https://ordinalsbot.com/mint/btc-artsy-monke'
@@ -66,7 +65,7 @@ while True:
     try:
         schedule.run_pending()
         sleep(15)
-    except:
-        print('Internet Problem? Retrying in a minute...')
+    except Exception as e:
+        print('Internet Problem? Retrying in a minute...\n\n', e)
         sleep(60)
 
